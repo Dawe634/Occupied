@@ -1902,7 +1902,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf976faa15b2d451f85cb2e348c8a8b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 0.1
+  speed: 20
   myController: {fileID: 2123291320}
 --- !u!143 &2123291320
 CharacterController:

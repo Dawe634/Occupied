@@ -5,7 +5,10 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
 public float speed = 0.5f;
+
 public CharacterController myController;
+
+
 
     // Start is called before the first frame update
     void Start()
@@ -16,7 +19,13 @@ public CharacterController myController;
     // Update is called once per frame
     void Update()
     {
-        myController.Move(Vector3.forward * speed);
+        float x = Input.GetAxis("Horizontal");
+        float z = Input.GetAxis("Vertical");
+
+        Vector3 movement = x*transform.right + z*transform.forward;
+            movement = movement * speed * Time.deltaTime;
+
+        myController.Move(movement);
     }
 
 }
