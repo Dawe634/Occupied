@@ -8,6 +8,8 @@ public float speed = 0.5f;
 
 public CharacterController myController;
 
+    public float mouseSensitivity = 100f;
+
 
 
     // Start is called before the first frame update
@@ -20,6 +22,12 @@ public CharacterController myController;
     void Update()
     {
         PlayerMovement();
+
+        float mouseX = Input.GetAxisRaw("Mouse X") * mouseSensitivity * Time.deltaTime;
+
+        transform.Rotate(Vector3.up * mouseX);
+
+        //float mouseY = Input.GetAxisRaw("Mouse Y");
     }
 
     void PlayerMovement()
