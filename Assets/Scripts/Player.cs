@@ -8,7 +8,11 @@ public float speed = 0.5f;
 
 public CharacterController myController;
 
-    public float mouseSensitivity = 100f;
+public Transform myCameraHead;
+
+public float mouseSensitivity = 750f;
+
+private float cameraVerticalRotation;
 
 
 
@@ -24,10 +28,14 @@ public CharacterController myController;
         PlayerMovement();
 
         float mouseX = Input.GetAxisRaw("Mouse X") * mouseSensitivity * Time.deltaTime;
+        float mouseY = Input.GetAxisRaw("Mouse Y") * mouseSensitivity * Time.deltaTime;
+
+        cameraVerticalRotation -= +mouseY;
+        cameraVerticalRotation = Mathf.Clamp(cameraVerticalRotation, -90f, 90f);
 
         transform.Rotate(Vector3.up * mouseX);
 
-        //float mouseY = Input.GetAxisRaw("Mouse Y");
+        myCameraHead.localRotation = Quaternion.Euler(cameraVerticalRotation, 0f, 0f);
     }
 
     void PlayerMovement()
