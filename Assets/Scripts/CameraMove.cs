@@ -11,15 +11,12 @@ public class CameraMove : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
-    // Update is called once per frame
     private void LateUpdate()
     {
         transform.position = myPlayerHead.position;
         transform.rotation = myPlayerHead.rotation;
     }
-
 }
-
