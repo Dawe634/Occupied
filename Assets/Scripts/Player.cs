@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,7 +15,9 @@ public float mouseSensitivity = 750f;
 
 private float cameraVerticalRotation;
 
+public GameObject bullet;
 
+public Transform firePosition;
 
     // Start is called before the first frame update
     void Start()
@@ -27,6 +30,22 @@ private float cameraVerticalRotation;
     {
         PlayerMovement();
 
+        CameraMovement();
+
+        Shoot();
+    }
+
+    private void Shoot()
+    {
+       if(Input.GetMouseButtonDown(0))
+        {
+            Instantiate(bullet, firePosition.position, firePosition.rotation);
+        }
+
+    }
+
+    private void CameraMovement()
+    {
         float mouseX = Input.GetAxisRaw("Mouse X") * mouseSensitivity * Time.deltaTime;
         float mouseY = Input.GetAxisRaw("Mouse Y") * mouseSensitivity * Time.deltaTime;
 

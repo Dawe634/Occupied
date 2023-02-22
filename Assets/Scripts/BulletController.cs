@@ -18,6 +18,16 @@ public class BulletController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        BulletFly();
+    }
+
+    private void BulletFly()
+    {
         myRigidBody.velocity = transform.forward * speed;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        Destroy(gameObject);
     }
 }
