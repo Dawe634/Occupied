@@ -19,7 +19,7 @@ public GameObject bullet;
 
 public Transform firePosition;
 
-public GameObject muzzleFlash, bulletHole;
+public GameObject muzzleFlash, bulletHole, goopSpray;
 
 
     // Start is called before the first frame update
@@ -49,7 +49,16 @@ public GameObject muzzleFlash, bulletHole;
                 if (Vector3.Distance(myCameraHead.position, hit.point) > 2f)
                 {
                    firePosition.LookAt(hit.point);
+                    if (hit.collider.tag == "Shootable")
+                    {
+                        Instantiate(bulletHole, hit.point, Quaternion.LookRotation(hit.normal));
+                    }
+
+                    if (hit.collider.tag == "Plane")
+                        Instantiate(goopSpray, hit.point, Quaternion.LookRotation(hit.normal));
+                    
                 }
+
 
                 
             }
