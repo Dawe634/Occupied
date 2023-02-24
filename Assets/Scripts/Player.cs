@@ -7,6 +7,10 @@ public class Player : MonoBehaviour
 {
 public float speed = 0.5f;
 
+public Vector3 velocity;
+
+    public float gravityModifier;
+
 public CharacterController myController;
 
 public Transform myCameraHead;
@@ -101,6 +105,14 @@ public GameObject muzzleFlash, bulletHole, goopSpray;
         movement = movement * speed * Time.deltaTime;
 
         myController.Move(movement);
+
+        velocity.y += Physics.gravity.y * Mathf.Pow(Time.deltaTime, 2) * gravityModifier;
+
+        if(myController.isGrounded)
+        { velocity.y = Physics.gravity.y * Time.deltaTime; }
+
+
+        myController.Move(velocity);
     }
 
 }
