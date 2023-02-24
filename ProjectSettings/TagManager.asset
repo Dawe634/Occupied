@@ -11,6 +11,7 @@ TagManager:
   - Dummie
   - Shootable
   - Plane
+  - Enemy
   layers:
   - Default
   - TransparentFX

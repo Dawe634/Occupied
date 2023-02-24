@@ -60,6 +60,10 @@ public GameObject muzzleFlash, bulletHole, goopSpray;
                 }
 
 
+                if (hit.collider.CompareTag("Enemy"))
+                    { Destroy(hit.collider.gameObject); }
+
+
                 
             }
             else
