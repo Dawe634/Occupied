@@ -26,10 +26,28 @@ public Transform firePosition;
 public GameObject muzzleFlash, bulletHole, goopSpray;
 
 
+//Jumping
+public float jumpHeight = 10f;
+private Boolean readyToJump;
+public Transform ground;
+public LayerMask groundLayer;
+public float groundDistance = 0.5f;
+
+ //Crouching
+ private Vector3 crouchScale = new Vector3(1, 0.5f, 1);
+ private Vector3 bodyScale;
+ public Transform myBody;
+ public Transform myEyes;
+ private float initialControllerHeight;
+ public float crouchSpeed;
+ private bool isCrouching = false;
+
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        bodyScale = myBody.localScale;
+        initialControllerHeight = myController.height;
     }
 
     // Update is called once per frame
@@ -39,7 +57,53 @@ public GameObject muzzleFlash, bulletHole, goopSpray;
 
         CameraMovement();
 
+        Jump();
+
         Shoot();
+
+        Crouching();
+    }
+
+    private void Crouching()
+    {
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            StartCrouching();
+        }
+
+        if(Input.GetKeyUp(KeyCode.C))
+        {
+           StopCrouching();
+        }
+    }
+
+   private void StartCrouching()
+    {
+        myBody.localScale = crouchScale;
+        myCameraHead.position -= new Vector3(0, 0.5f, 0);
+        myEyes.position -= new Vector3(0, 0.5f, 0);
+        myController.height /= 2;
+        isCrouching = true; 
+    }
+
+    private void StopCrouching()
+    {
+        myBody.localScale = bodyScale;
+        myCameraHead.position += new Vector3(0, 0.5f, 0);
+        myEyes.position += new Vector3(0, 0.5f, 0);
+        myController.height = initialControllerHeight;
+        isCrouching = false;
+    }
+
+    void Jump()
+    {
+      readyToJump =  Physics.OverlapSphere(ground.position, groundDistance, groundLayer).Length > 0;
+        if (Input.GetButtonDown("Jump") && readyToJump)
+        {
+            velocity.y = MathF.Sqrt(jumpHeight * -2f * Physics.gravity.y) * Time.deltaTime;
+        }
+
+        myController.Move(velocity);
     }
 
     private void Shoot()
@@ -102,8 +166,14 @@ public GameObject muzzleFlash, bulletHole, goopSpray;
         float z = Input.GetAxis("Vertical");
 
         Vector3 movement = x * transform.right + z * transform.forward;
-        movement = movement * speed * Time.deltaTime;
-
+        if (isCrouching)
+        {
+            movement = movement * crouchSpeed * Time.deltaTime;
+        }
+        else
+        {
+            movement = movement * speed * Time.deltaTime;
+        }
         myController.Move(movement);
 
         velocity.y += Physics.gravity.y * Mathf.Pow(Time.deltaTime, 2) * gravityModifier;
