@@ -6,23 +6,20 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
 public float speed = 0.5f;
+    public float runSpeed = 2f;
 
 public Vector3 velocity;
-
-    public float gravityModifier;
+public float gravityModifier;
 
 public CharacterController myController;
-
 public Transform myCameraHead;
-
+public Animator myAnimator;
 public float mouseSensitivity = 750f;
 
 private float cameraVerticalRotation;
 
 public GameObject bullet;
-
 public Transform firePosition;
-
 public GameObject muzzleFlash, bulletHole, goopSpray;
 
 
@@ -42,6 +39,12 @@ public float groundDistance = 0.5f;
  public float crouchSpeed;
  private bool isCrouching = false;
 
+    //Sliding
+    public bool isRunning = false;
+    public bool startSliderTimer;
+    public float currentSlideTimer;
+    public float maxSlideTime = 2f;
+    public float slideSpeed = 60f;
 
     // Start is called before the first frame update
     void Start()
@@ -62,6 +65,8 @@ public float groundDistance = 0.5f;
         Shoot();
 
         Crouching();
+
+        SlideCounter();
     }
 
     private void Crouching()
@@ -71,7 +76,7 @@ public float groundDistance = 0.5f;
             StartCrouching();
         }
 
-        if(Input.GetKeyUp(KeyCode.C))
+        if(Input.GetKeyUp(KeyCode.C) || currentSlideTimer > maxSlideTime)
         {
            StopCrouching();
         }
@@ -84,10 +89,21 @@ public float groundDistance = 0.5f;
         myEyes.position -= new Vector3(0, 0.5f, 0);
         myController.height /= 2;
         isCrouching = true; 
+
+        if(isRunning)
+        {
+            velocity = Vector3.ProjectOnPlane(myCameraHead.transform.forward, Vector3.up).normalized * slideSpeed * Time.deltaTime;
+            startSliderTimer = true;
+        }
+
     }
 
     private void StopCrouching()
     {
+        currentSlideTimer = 0f;
+        velocity = new Vector3(0, 0, 0);
+        startSliderTimer = false;
+
         myBody.localScale = bodyScale;
         myCameraHead.position += new Vector3(0, 0.5f, 0);
         myEyes.position += new Vector3(0, 0.5f, 0);
@@ -166,14 +182,28 @@ public float groundDistance = 0.5f;
         float z = Input.GetAxis("Vertical");
 
         Vector3 movement = x * transform.right + z * transform.forward;
-        if (isCrouching)
+
+        if (Input.GetKey(KeyCode.LeftShift) && !isCrouching) {
+            movement = movement * runSpeed * Time.deltaTime;
+
+            isRunning = true;
+        }
+
+        else if (isCrouching)
         {
             movement = movement * crouchSpeed * Time.deltaTime;
         }
         else
         {
             movement = movement * speed * Time.deltaTime;
+            isRunning = false; 
+
         }
+
+        myAnimator.SetFloat("PlayerSpeed", movement.magnitude);
+        Debug.Log(movement.magnitude);
+
+
         myController.Move(movement);
 
         velocity.y += Physics.gravity.y * Mathf.Pow(Time.deltaTime, 2) * gravityModifier;
@@ -183,6 +213,13 @@ public float groundDistance = 0.5f;
 
 
         myController.Move(velocity);
+    }
+
+    private void SlideCounter()
+    {
+        if (startSliderTimer) {
+            currentSlideTimer += Time.deltaTime;
+        }
     }
 
 }
