@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,16 +16,34 @@ public class GunSystem : MonoBehaviour
 
     public float timeBetweenShots;
 
+    public int bulletsAvailable;
+    public int totalBullets, magazineSize;
+
+
+    public float reloadTime;
+    private bool reloading;
+
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        totalBullets -= magazineSize;
+        bulletsAvailable = magazineSize;
+
     }
 
     // Update is called once per frame
     void Update()
     {
         Shoot();
+        GunManager();
+    }
+
+    private void GunManager()
+    {
+        if(Input.GetKeyDown(KeyCode.R) && bulletsAvailable < magazineSize && !reloading) {
+            Reload();
+        }
     }
 
     private void Shoot()
@@ -33,7 +52,7 @@ public class GunSystem : MonoBehaviour
         else { shooting = Input.GetMouseButtonDown(0); }
 
 
-        if (shooting && readyToShoot)
+        if (shooting && readyToShoot && bulletsAvailable > 0 && !reloading)
         {
             readyToShoot = false;
             RaycastHit hit;
@@ -65,13 +84,36 @@ public class GunSystem : MonoBehaviour
                 firePosition.LookAt(myCameraHead.position + (myCameraHead.forward * 50f));
             }
 
+            bulletsAvailable--;
+
             Instantiate(muzzleFlash, firePosition.position, firePosition.rotation, firePosition);
             Instantiate(bullet, firePosition.position, firePosition.rotation, firePosition);
 
 
             StartCoroutine(ResetShot());
+
+            
         }
 
+    }
+
+    private void Reload()
+    {
+        int bulletsToAdd = magazineSize - bulletsAvailable;
+        if(totalBullets > bulletsToAdd)
+        {
+            totalBullets -= bulletsToAdd;
+            bulletsAvailable = magazineSize;
+        }
+        else
+        {
+            bulletsAvailable += totalBullets;
+            totalBullets = 0;
+        }
+
+        reloading = true;
+
+        StartCoroutine(ReloadCoroutine());
     }
 
     IEnumerator ResetShot()
@@ -79,5 +121,12 @@ public class GunSystem : MonoBehaviour
         yield return new WaitForSeconds(timeBetweenShots);
 
         readyToShoot = true;
+    }
+
+    IEnumerator ReloadCoroutine()
+    {
+        yield return new WaitForSeconds(reloadTime);
+
+        reloading = false;
     }
 }
