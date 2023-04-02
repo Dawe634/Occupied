@@ -2,11 +2,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class GunSystem : MonoBehaviour
 {
 
     public Transform myCameraHead;
+    private UICanvasController myUICanvas;
+
     public GameObject bullet;
     public Transform firePosition;
     public GameObject muzzleFlash, bulletHole, goopSpray;
@@ -30,6 +33,7 @@ public class GunSystem : MonoBehaviour
         totalBullets -= magazineSize;
         bulletsAvailable = magazineSize;
 
+        myUICanvas = FindObjectOfType<UICanvasController>();
     }
 
     // Update is called once per frame
@@ -37,11 +41,13 @@ public class GunSystem : MonoBehaviour
     {
         Shoot();
         GunManager();
+
+        UpdateAmmoText();
     }
 
     private void GunManager()
     {
-        if(Input.GetKeyDown(KeyCode.R) && bulletsAvailable < magazineSize && !reloading) {
+        if (Input.GetKeyDown(KeyCode.R) && bulletsAvailable < magazineSize && !reloading) {
             Reload();
         }
     }
@@ -92,7 +98,7 @@ public class GunSystem : MonoBehaviour
 
             StartCoroutine(ResetShot());
 
-            
+
         }
 
     }
@@ -100,7 +106,7 @@ public class GunSystem : MonoBehaviour
     private void Reload()
     {
         int bulletsToAdd = magazineSize - bulletsAvailable;
-        if(totalBullets > bulletsToAdd)
+        if (totalBullets > bulletsToAdd)
         {
             totalBullets -= bulletsToAdd;
             bulletsAvailable = magazineSize;
@@ -128,5 +134,11 @@ public class GunSystem : MonoBehaviour
         yield return new WaitForSeconds(reloadTime);
 
         reloading = false;
+    }
+
+    private void UpdateAmmoText()
+    {
+        myUICanvas.ammoText.SetText(bulletsAvailable + "/" + magazineSize);
+        myUICanvas.totalAmmo.SetText(totalBullets.ToString());
     }
 }
