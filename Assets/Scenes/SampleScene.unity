@@ -281,6 +281,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c04b1fbbd84a7f34b83af137b196f16a, type: 3}
+--- !u!1 &320175532 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6209127119049224015, guid: c04b1fbbd84a7f34b83af137b196f16a, type: 3}
+  m_PrefabInstance: {fileID: 6209127119985876757}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &345775088
 GameObject:
   m_ObjectHideFlags: 0
@@ -1541,6 +1546,20 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6209127119049224011, guid: c04b1fbbd84a7f34b83af137b196f16a, type: 3}
   m_PrefabInstance: {fileID: 6209127119985876757}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1210904671
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 320175532}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4ac699042aea412481ec0144b94e98e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 7
+  health: 100
 --- !u!1 &1230886633
 GameObject:
   m_ObjectHideFlags: 0
@@ -3854,6 +3873,7 @@ MonoBehaviour:
   totalBullets: 380
   magazineSize: 37
   reloadTime: 2
+  aimPosition: {fileID: 0}
 --- !u!1 &8068914436579043442
 GameObject:
   m_ObjectHideFlags: 0
