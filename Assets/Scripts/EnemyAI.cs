@@ -9,24 +9,40 @@ public class EnemyAI : MonoBehaviour
 {
 
     NavMeshAgent myAgent;
-    public LayerMask whatIsGround;
+    public LayerMask whatIsGround, whatIsPlayer;
+    public Transform player;
 
 
     public Vector3 destinationPoint;
     bool destinationSet;
     public float destinationRange;
 
+    public float ChaseRange;
+    public bool playerInChaseRange;
+
     // Start is called before the first frame update
     void Start()
     {
+        player = FindObjectOfType<Player>().transform;
         myAgent = GetComponent<NavMeshAgent>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        Guarding();
+        playerInChaseRange = Physics.CheckSphere(transform.position, ChaseRange, whatIsPlayer);
+
+        if (!playerInChaseRange)
+        {
+            Guarding();
+        }
+        else if (playerInChaseRange)
+        {
+            ChasingPlayer();
+        }
     }
+
+
 
     private void Guarding()
     {
@@ -41,12 +57,18 @@ public class EnemyAI : MonoBehaviour
 
         Vector3 distanceToDestination = transform.position - destinationPoint;
 
-        if(distanceToDestination.magnitude < 1f)
+        if (distanceToDestination.magnitude < 1f)
         {
             destinationSet = false;
         }
-           
+
     }
+
+    private void ChasingPlayer()
+    {
+        myAgent.SetDestination(player.position);
+    }
+
 
     private void SearchForDestination()
     {
@@ -60,9 +82,16 @@ public class EnemyAI : MonoBehaviour
             transform.position.y,
             transform.position.z + randPositionZ);
 
-        if(Physics.Raycast(destinationPoint, -transform.up, 2f, whatIsGround))
+        if (Physics.Raycast(destinationPoint, -transform.up, 2f, whatIsGround))
         {
             destinationSet = true;
         }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, ChaseRange);
+
     }
 }
