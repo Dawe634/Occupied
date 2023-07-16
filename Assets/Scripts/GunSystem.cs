@@ -12,7 +12,7 @@ public class GunSystem : MonoBehaviour
 
     public GameObject bullet;
     public Transform firePosition;
-    public GameObject muzzleFlash, bulletHole, goopSpray;
+    public GameObject muzzleFlash, bulletHole, goopSpray, bloodSpray;
 
     public bool canAutoFire;
     private bool shooting, readyToShoot = true;
@@ -33,6 +33,7 @@ public class GunSystem : MonoBehaviour
     private Vector3 gunStartPosition;
 
     public float zoomAmount;
+    public int damageAmount;
 
     // Start is called before the first frame update
     void Start()
@@ -107,7 +108,8 @@ public class GunSystem : MonoBehaviour
 
 
                 if (hit.collider.CompareTag("Enemy"))
-                { Destroy(hit.collider.gameObject); }
+                { hit.collider.GetComponent<EnemyHealthSystem>().TakeDamage(damageAmount);
+                    Instantiate(bloodSpray, hit.point, Quaternion.LookRotation(hit.normal)); }
 
 
 

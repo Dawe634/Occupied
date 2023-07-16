@@ -11,6 +11,8 @@ public class EnemyAI : MonoBehaviour
     NavMeshAgent myAgent;
     public LayerMask whatIsGround, whatIsPlayer;
     public Transform player;
+    Animator myAnimator;
+    public Transform firePosition;
 
 
     public Vector3 destinationPoint;
@@ -18,11 +20,20 @@ public class EnemyAI : MonoBehaviour
     public float destinationRange;
 
     public float ChaseRange;
-    public bool playerInChaseRange;
+    private bool playerInChaseRange;
+
+    public float AttackRange, attackTime;
+    private bool playerInAttackRange, readyToAttack = true;
+    public GameObject AttackProjectile;
+
+    public bool meleeAttacker;
+    public bool airDrone;
+    public int meleeDamageAmount;
 
     // Start is called before the first frame update
     void Start()
     {
+        myAnimator = GetComponent<Animator>();
         player = FindObjectOfType<Player>().transform;
         myAgent = GetComponent<NavMeshAgent>();
     }
@@ -31,18 +42,23 @@ public class EnemyAI : MonoBehaviour
     void Update()
     {
         playerInChaseRange = Physics.CheckSphere(transform.position, ChaseRange, whatIsPlayer);
+        playerInAttackRange = Physics.CheckSphere(transform.position, AttackRange, whatIsPlayer);
 
-        if (!playerInChaseRange)
+        if (!playerInChaseRange && !playerInAttackRange)
         {
             Guarding();
         }
-        else if (playerInChaseRange)
+        if (playerInChaseRange && !playerInAttackRange)
         {
             ChasingPlayer();
         }
+        if(playerInAttackRange && playerInChaseRange)
+        {
+            AttackingPlayer();
+        }
     }
 
-
+   
 
     private void Guarding()
     {
@@ -69,6 +85,31 @@ public class EnemyAI : MonoBehaviour
         myAgent.SetDestination(player.position);
     }
 
+ private void AttackingPlayer()
+    {
+        myAgent.SetDestination(transform.position);
+        transform.LookAt(player);
+        if (readyToAttack && !meleeAttacker)
+        {
+            firePosition.LookAt(player);
+
+            myAnimator.SetTrigger("Attack");
+            
+            Instantiate(AttackProjectile, firePosition.position, firePosition.rotation);
+            readyToAttack = false;
+            
+            StartCoroutine(ResetAttack());
+        }
+        else if(readyToAttack && meleeAttacker)
+        {
+            myAnimator.SetTrigger("Attack");
+        }
+    }
+
+    public void MeleeDamage()
+    {
+        player.GetComponent<PlayerHealthSystem>().TakeDamage(meleeDamageAmount);
+    }
 
     private void SearchForDestination()
     {
@@ -88,10 +129,20 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    IEnumerator ResetAttack()
+    {
+        yield return new WaitForSeconds(attackTime);
+
+        readyToAttack = true;
+    }
+
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(transform.position, ChaseRange);
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, AttackRange);
 
     }
 }
