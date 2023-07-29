@@ -8,6 +8,9 @@ public class BulletController : MonoBehaviour
     public float speed, bulletLife;
 
     public Rigidbody myRigidBody;
+    public ParticleSystem explosoionEffect;
+    public bool rocket;
+
 
     // Start is called before the first frame update
     void Start()
@@ -36,9 +39,12 @@ public class BulletController : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
 
+        if (rocket)
+        {
+            Instantiate(explosoionEffect, transform.position, Quaternion.identity);
+        }
 
-      //  if (other.gameObject.tag == "Enemy")
-       // { Destroy(other.gameObject); }
+    
         Destroy(gameObject);
     }
 }

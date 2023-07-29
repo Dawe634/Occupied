@@ -9,10 +9,11 @@ public class GunSystem : MonoBehaviour
 
     public Transform myCameraHead;
     private UICanvasController myUICanvas;
+    public Animator myAnimator;
 
     public GameObject bullet;
     public Transform firePosition;
-    public GameObject muzzleFlash, bulletHole, goopSpray, bloodSpray;
+    public GameObject muzzleFlash, bulletHole, goopSpray, bloodSpray, rocketTrail;
 
     public bool canAutoFire;
     private bool shooting, readyToShoot = true;
@@ -34,6 +35,11 @@ public class GunSystem : MonoBehaviour
 
     public float zoomAmount;
     public int damageAmount;
+    public string gunName;
+
+    public bool rocketLauncher;
+
+    string gunAnimationName;
 
     // Start is called before the first frame update
     void Start()
@@ -53,6 +59,35 @@ public class GunSystem : MonoBehaviour
         GunManager();
 
         UpdateAmmoText();
+
+        AnimationManager();
+    }
+
+    private void AnimationManager()
+    {
+        switch (gunName)
+        {
+            case "Pistol":
+                gunAnimationName = "Pistol Reload";
+                break;
+
+            case "Rifle":
+                gunAnimationName = "Rifle Reload";
+                break;
+
+            case "Sniper":
+                gunAnimationName = "Sniper Reload";
+                break;
+
+            case "RocketLauncher":
+                gunAnimationName = "Rocket Reload";
+                break;
+
+            default:
+                break;
+
+
+         }   
     }
 
     private void GunManager()
@@ -95,19 +130,20 @@ public class GunSystem : MonoBehaviour
             {
                 if (Vector3.Distance(myCameraHead.position, hit.point) > 2f)
                 {
+
                     firePosition.LookAt(hit.point);
-                    if (hit.collider.tag == "Shootable")
+
+                    if (!rocketLauncher)
                     {
-                        Instantiate(bulletHole, hit.point, Quaternion.LookRotation(hit.normal));
+                        if (hit.collider.tag == "Shootable")
+                            Instantiate(bulletHole, hit.point, Quaternion.LookRotation(hit.normal));
+                        if (hit.collider.tag == "Plane")
+                            Instantiate(goopSpray, hit.point, Quaternion.LookRotation(hit.normal));
                     }
-
-                    if (hit.collider.tag == "Plane")
-                        Instantiate(goopSpray, hit.point, Quaternion.LookRotation(hit.normal));
-
                 }
 
 
-                if (hit.collider.CompareTag("Enemy"))
+                if (hit.collider.CompareTag("Enemy") && !rocketLauncher)
                 { hit.collider.GetComponent<EnemyHealthSystem>().TakeDamage(damageAmount);
                     Instantiate(bloodSpray, hit.point, Quaternion.LookRotation(hit.normal)); }
 
@@ -116,35 +152,31 @@ public class GunSystem : MonoBehaviour
             }
             else
             {
+                
                 firePosition.LookAt(myCameraHead.position + (myCameraHead.forward * 50f));
             }
 
             bulletsAvailable--;
 
-            Instantiate(muzzleFlash, firePosition.position, firePosition.rotation, firePosition);
-            Instantiate(bullet, firePosition.position, firePosition.rotation, firePosition);
-
+            if (!rocketLauncher)
+            {
+                Instantiate(muzzleFlash, firePosition.position, firePosition.rotation, firePosition);
+                Instantiate(bullet, firePosition.position, firePosition.rotation, firePosition);
+            }
+            else
+            {
+                Instantiate(bullet, firePosition.position, firePosition.rotation);
+                Instantiate(rocketTrail, firePosition.position, firePosition.rotation);
+            }
 
             StartCoroutine(ResetShot());
-
-
         }
 
     }
 
     private void Reload()
     {
-        int bulletsToAdd = magazineSize - bulletsAvailable;
-        if (totalBullets > bulletsToAdd)
-        {
-            totalBullets -= bulletsToAdd;
-            bulletsAvailable = magazineSize;
-        }
-        else
-        {
-            bulletsAvailable += totalBullets;
-            totalBullets = 0;
-        }
+        myAnimator.SetTrigger(gunAnimationName);
 
         reloading = true;
 
@@ -160,9 +192,24 @@ public class GunSystem : MonoBehaviour
 
     IEnumerator ReloadCoroutine()
     {
+
         yield return new WaitForSeconds(reloadTime);
 
         reloading = false;
+
+        int bulletsToAdd = magazineSize - bulletsAvailable;
+        if (totalBullets > bulletsToAdd)
+        {
+            totalBullets -= bulletsToAdd;
+            bulletsAvailable = magazineSize;
+        }
+        else
+        {
+            bulletsAvailable += totalBullets;
+            totalBullets = 0;
+        }
+
+      
     }
 
     private void UpdateAmmoText()
