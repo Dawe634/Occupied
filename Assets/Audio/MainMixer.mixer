@@ -53,6 +53,7 @@ AudioMixerController:
   - guids:
     - c7e74087da40e414dbc952ca62e50a58
     - b1fda3d5065d943a496d2dfb01cb1886
+    - 5eaba96a955994277b0c9839e908c176
     name: View
   m_CurrentViewIndex: 0
   m_TargetSnapshot: {fileID: 24500006}
@@ -67,6 +68,7 @@ AudioMixerGroupController:
   m_GroupID: c7e74087da40e414dbc952ca62e50a58
   m_Children:
   - {fileID: -2539834247906145251}
+  - {fileID: 811493125521849381}
   m_Volume: 6854dfb15091a4c54b4050f0d4b448e2
   m_Pitch: f1c08def3584a45058958a2269ef7659
   m_Send: 00000000000000000000000000000000
@@ -99,5 +101,39 @@ AudioMixerSnapshotController:
   m_Name: Snapshot
   m_AudioMixer: {fileID: 24100000}
   m_SnapshotID: 5438ec1f221714331bcb2c7fd12ab2a1
-  m_FloatValues: {}
+  m_FloatValues:
+    ac7d7fa4a45ab482e8b182b09bfda5c9: -56.45051
   m_TransitionOverrides: {}
+--- !u!243 &811493125521849381
+AudioMixerGroupController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: WeaponSFX
+  m_AudioMixer: {fileID: 24100000}
+  m_GroupID: 5eaba96a955994277b0c9839e908c176
+  m_Children: []
+  m_Volume: 535535c3c95e34af28a95ca215d8fd88
+  m_Pitch: 00a5cf01e90674e13b9201ac085197c6
+  m_Send: 00000000000000000000000000000000
+  m_Effects:
+  - {fileID: 4856431054181677059}
+  m_UserColorIndex: 0
+  m_Mute: 0
+  m_Solo: 0
+  m_BypassEffects: 0
+--- !u!244 &4856431054181677059
+AudioMixerEffectController:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_EffectID: 2fcaeb78cf5f04abdaa6a3d9d5e063f5
+  m_EffectName: Attenuation
+  m_MixLevel: 97eb2696ad51b4ed188adedfc44ac4fd
+  m_Parameters: []
+  m_SendTarget: {fileID: 0}
+  m_EnableWetMix: 0
+  m_Bypass: 0

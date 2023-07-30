@@ -38,7 +38,15 @@ public class WeaponSwitchSystem : MonoBehaviour
             currentGunNumber = 0;
 
         activeGun = allGuns[currentGunNumber];
-        activeGun.gameObject.SetActive(true);
+        if (activeGun != null)
+        {
+            Debug.Log("Switching to gun: " + activeGun.gunName);
+            activeGun.gameObject.SetActive(true);
+        }
+        else
+        {
+            Debug.LogWarning("No gun found at index: " + currentGunNumber);
+        }
 
     }
 

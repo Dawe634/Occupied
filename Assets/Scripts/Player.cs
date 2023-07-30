@@ -160,7 +160,7 @@ public float groundDistance = 0.5f;
         }
 
         myAnimator.SetFloat("PlayerSpeed", movement.magnitude);
-        Debug.Log(movement.magnitude);
+        
 
 
         myController.Move(movement);
